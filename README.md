@@ -53,6 +53,7 @@ You will receive your TMDB API key.
 Now recreate the Docker image with your api key:
 
     docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
+    
 Phase 2: Security
 
 Install SonarQube and Trivy:
@@ -62,6 +63,7 @@ Install SonarQube and Trivy on the EC2 instance to scan for vulnerabilities.
 sonarqube
 
     docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+    
 To access:
 
     publicIP:9000 (by default username & password is admin)
@@ -72,10 +74,12 @@ To install Trivy:
     wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
     echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
     sudo apt-get update
-    sudo apt-get install trivy        
+    sudo apt-get install trivy 
+    
 to scan image using trivy
 
-trivy image <imageid>
+    trivy image <imageid>
+
 Integrate SonarQube and Configure:
 
 Integrate SonarQube with your CI/CD pipeline.
@@ -93,6 +97,7 @@ Install Jenkins on the EC2 instance to automate deployment: Install Java
     OpenJDK 64-Bit Server VM (build 17.0.8+7-Debian-1deb12u1, mixed mode, sharing)
 
 #jenkins
+
     sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
     https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
     echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
@@ -102,6 +107,7 @@ Install Jenkins on the EC2 instance to automate deployment: Install Java
     sudo apt-get install jenkins
     sudo systemctl start jenkins
     sudo systemctl enable jenkins
+    
 Access Jenkins in a web browser using the public IP of your EC2 instance.
 
     publicIp:8080
@@ -329,6 +335,7 @@ First, create a dedicated Linux user for Prometheus and download Prometheus:
 
     sudo useradd --system --no-create-home --shell /bin/false prometheus
     wget https://github.com/prometheus/prometheus/releases/download/v2.47.1/prometheus-2.47.1.linux-amd64.tar.gz
+    
 Extract Prometheus files, move them, and create directories:
 
     tar -xvf prometheus-2.47.1.linux-amd64.tar.gz
@@ -337,12 +344,15 @@ Extract Prometheus files, move them, and create directories:
     sudo mv prometheus promtool /usr/local/bin/
     sudo mv consoles/ console_libraries/ /etc/prometheus/
     sudo mv prometheus.yml /etc/prometheus/prometheus.yml
+    
 Set ownership for directories:
 
     sudo chown -R prometheus:prometheus /etc/prometheus/ /data/
+    
 Create a systemd unit configuration file for Prometheus:
 
     sudo nano /etc/systemd/system/prometheus.service
+    
 Add the following content to the prometheus.service file:
     
     [Unit]
@@ -369,6 +379,7 @@ Add the following content to the prometheus.service file:
 
     [Install]
     WantedBy=multi-user.target
+    
 Here's a brief explanation of the key parts in this prometheus.service file:
 
 User and Group specify the Linux user and group under which Prometheus will run.
@@ -383,9 +394,11 @@ Enable and start Prometheus:
 
     sudo systemctl enable prometheus
     sudo systemctl start prometheus
+    
 Verify Prometheus's status:
 
     sudo systemctl status prometheus
+    
 You can access Prometheus in a web browser using your server's IP and port 9090:
 
     http://<your-server-ip>:9090
@@ -396,43 +409,49 @@ Create a system user for Node Exporter and download Node Exporter:
 
     sudo useradd --system --no-create-home --shell /bin/false node_exporter
     wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+    
 Extract Node Exporter files, move the binary, and clean up:
 
-tar -xvf node_exporter-1.6.1.linux-amd64.tar.gz
-sudo mv node_exporter-1.6.1.linux-amd64/node_exporter /usr/local/bin/
-rm -rf node_exporter*
+    tar -xvf node_exporter-1.6.1.linux-amd64.tar.gz
+    sudo mv node_exporter-1.6.1.linux-amd64/node_exporter /usr/local/bin/
+    rm -rf node_exporter*
+
 Create a systemd unit configuration file for Node Exporter:
 
-sudo nano /etc/systemd/system/node_exporter.service
+    sudo nano /etc/systemd/system/node_exporter.service
+    
 Add the following content to the node_exporter.service file:
 
-[Unit]
-Description=Node Exporter
-Wants=network-online.target
-After=network-online.target
-
-StartLimitIntervalSec=500
-StartLimitBurst=5
-
-[Service]
-User=node_exporter
-Group=node_exporter
-Type=simple
-Restart=on-failure
-RestartSec=5s
-ExecStart=/usr/local/bin/node_exporter --collector.logind
-
-[Install]
-WantedBy=multi-user.target
+    [Unit]
+    Description=Node Exporter
+    Wants=network-online.target
+    After=network-online.target
+    
+    StartLimitIntervalSec=500
+    StartLimitBurst=5
+    
+    [Service]
+    User=node_exporter
+    Group=node_exporter
+    Type=simple
+    Restart=on-failure
+    RestartSec=5s
+    ExecStart=/usr/local/bin/node_exporter --collector.logind
+    
+    [Install]
+    WantedBy=multi-user.target
+    
 Replace --collector.logind with any additional flags as needed.
 
 Enable and start Node Exporter:
 
-sudo systemctl enable node_exporter
-sudo systemctl start node_exporter
+    sudo systemctl enable node_exporter
+    sudo systemctl start node_exporter
+
 Verify the Node Exporter's status:
 
-sudo systemctl status node_exporter
+    sudo systemctl status node_exporter
+    
 You can access Node Exporter metrics in Prometheus.
 
 Configure Prometheus Plugin Integration:
@@ -442,19 +461,20 @@ Integrate Jenkins with Prometheus to monitor the CI/CD pipeline.
 Prometheus Configuration:
 
 To configure Prometheus to scrape metrics from Node Exporter and Jenkins, you need to modify the prometheus.yml file. Here is an example prometheus.yml configuration for your setup:
+        
+    global:
+      scrape_interval: 15s
+    
+    scrape_configs:
+      - job_name: 'node_exporter'
+        static_configs:
+          - targets: ['localhost:9100']
+    
+      - job_name: 'jenkins'
+        metrics_path: '/prometheus'
+        static_configs:
+          - targets: ['<your-jenkins-ip>:<your-jenkins-port>']
 
-global:
-  scrape_interval: 15s
-
-scrape_configs:
-  - job_name: 'node_exporter'
-    static_configs:
-      - targets: ['localhost:9100']
-
-  - job_name: 'jenkins'
-    metrics_path: '/prometheus'
-    static_configs:
-      - targets: ['<your-jenkins-ip>:<your-jenkins-port>']
 Make sure to replace <your-jenkins-ip> and <your-jenkins-port> with the appropriate values for your Jenkins setup.
 
 Check the validity of the configuration file:
@@ -462,10 +482,11 @@ Check the validity of the configuration file:
 promtool check config /etc/prometheus/prometheus.yml
 Reload the Prometheus configuration without restarting:
 
-curl -X POST http://localhost:9090/-/reload
+    curl -X POST http://localhost:9090/-/reload
+
 You can access Prometheus targets at:
 
-http://<your-prometheus-ip>:9090/targets
+    http://<your-prometheus-ip>:9090/targets
 
 ####Grafana
 
@@ -474,43 +495,49 @@ Install Grafana on Ubuntu 22.04 and Set it up to Work with Prometheus
 Step 1: Install Dependencies:
 
 First, ensure that all necessary dependencies are installed:
-
-sudo apt-get update
-sudo apt-get install -y apt-transport-https software-properties-common
-Step 2: Add the GPG Key:
+    
+    sudo apt-get update
+    sudo apt-get install -y apt-transport-https software-properties-common
+    Step 2: Add the GPG Key:
 
 Add the GPG key for Grafana:
 
-wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+    wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+
 Step 3: Add Grafana Repository:
 
 Add the repository for Grafana stable releases:
 
-echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+    echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+
 Step 4: Update and Install Grafana:
 
 Update the package list and install Grafana:
 
-sudo apt-get update
-sudo apt-get -y install grafana
+    sudo apt-get update
+    sudo apt-get -y install grafana
+
 Step 5: Enable and Start Grafana Service:
 
 To automatically start Grafana after a reboot, enable the service:
 
-sudo systemctl enable grafana-server
+    sudo systemctl enable grafana-server
+
 Then, start Grafana:
 
-sudo systemctl start grafana-server
+    sudo systemctl start grafana-server
+
 Step 6: Check Grafana Status:
 
 Verify the status of the Grafana service to ensure it's running correctly:
 
-sudo systemctl status grafana-server
+    sudo systemctl status grafana-server
+
 Step 7: Access Grafana Web Interface:
 
 Open a web browser and navigate to Grafana using your server's IP address. The default port for Grafana is 3000. For example:
 
-http://<your-server-ip>:3000
+    http://<your-server-ip>:3000
 
 You'll be prompted to log in to Grafana. The default username is "admin," and the default password is also "admin."
 
@@ -576,17 +603,18 @@ To begin monitoring your Kubernetes cluster, you'll install the Prometheus Node 
 
 Add the Prometheus Community Helm repository:
 
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
 Create a Kubernetes namespace for the Node Exporter:
 
-kubectl create namespace prometheus-node-exporter
+    kubectl create namespace prometheus-node-exporter
 Install the Node Exporter using Helm:
 
-helm install prometheus-node-exporter prometheus-community/prometheus-node-exporter --namespace prometheus-node-exporter
+    helm install prometheus-node-exporter prometheus-community/prometheus-node-exporter --namespace prometheus-node-exporter
 Add a Job to Scrape Metrics on nodeip:9001/metrics in prometheus.yml:
 
 Update your Prometheus configuration (prometheus.yml) to add a new job for scraping metrics from nodeip:9001/metrics. You can do this by adding the following configuration to your prometheus.yml file:
-
+    
   - job_name: 'Netflix'
     metrics_path: '/metrics'
     static_configs:
