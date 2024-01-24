@@ -21,7 +21,7 @@ Update all the packages and then clone the code.
 
 Clone your application's code repository onto the EC2 instance:
 
-git clone https://github.com/N4si/DevSecOps-Project.git
+    git clone https://github.com/N4si/DevSecOps-Project.git
 Step 3: Install Docker and Run the App Using a Container:
 
 Set up Docker on the EC2 instance:
@@ -52,7 +52,7 @@ Provide the required basic details and click "Submit."
 You will receive your TMDB API key.
 Now recreate the Docker image with your api key:
 
-docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
+    docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
 Phase 2: Security
 
 Install SonarQube and Trivy:
