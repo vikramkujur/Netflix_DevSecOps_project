@@ -25,21 +25,21 @@ git clone https://github.com/N4si/DevSecOps-Project.git
 Step 3: Install Docker and Run the App Using a Container:
 
 Set up Docker on the EC2 instance:
-
-sudo apt-get update
-sudo apt-get install docker.io -y
-sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu'
-newgrp docker
-sudo chmod 777 /var/run/docker.sock
+    
+    sudo apt-get update
+    sudo apt-get install docker.io -y
+    sudo usermod -aG docker $USER  # Replace with your system's username, e.g., 'ubuntu'
+    newgrp docker
+    sudo chmod 777 /var/run/docker.sock
 Build and run your application using Docker containers:
-
-docker build -t netflix .
-docker run -d --name netflix -p 8081:80 netflix:latest
+    
+    docker build -t netflix .
+    docker run -d --name netflix -p 8081:80 netflix:latest
 
 #to delete
-docker stop <containerid>
-docker rmi -f netflix
-It will show an error cause you need API key
+    docker stop <containerid>
+    docker rmi -f netflix
+    It will show an error cause you need API key
 
 Step 4: Get the API Key:
 
@@ -61,18 +61,18 @@ Install SonarQube and Trivy on the EC2 instance to scan for vulnerabilities.
 
 sonarqube
 
-docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+    docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 To access:
 
-publicIP:9000 (by default username & password is admin)
+    publicIP:9000 (by default username & password is admin)
 
 To install Trivy:
 
-sudo apt-get install wget apt-transport-https gnupg lsb-release
-wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-sudo apt-get update
-sudo apt-get install trivy        
+    sudo apt-get install wget apt-transport-https gnupg lsb-release
+    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+    echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+    sudo apt-get update
+    sudo apt-get install trivy        
 to scan image using trivy
 
 trivy image <imageid>
@@ -85,26 +85,26 @@ Phase 3: CI/CD Setup
 Install Jenkins for Automation:
 
 Install Jenkins on the EC2 instance to automate deployment: Install Java
-sudo apt update
-sudo apt install fontconfig openjdk-17-jre
-java -version
-openjdk version "17.0.8" 2023-07-18
-OpenJDK Runtime Environment (build 17.0.8+7-Debian-1deb12u1)
-OpenJDK 64-Bit Server VM (build 17.0.8+7-Debian-1deb12u1, mixed mode, sharing)
+    sudo apt update
+    sudo apt install fontconfig openjdk-17-jre
+    java -version
+    openjdk version "17.0.8" 2023-07-18
+    OpenJDK Runtime Environment (build 17.0.8+7-Debian-1deb12u1)
+    OpenJDK 64-Bit Server VM (build 17.0.8+7-Debian-1deb12u1, mixed mode, sharing)
 
 #jenkins
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
-https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-/etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt-get update
-sudo apt-get install jenkins
-sudo systemctl start jenkins
-sudo systemctl enable jenkins
+    sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+    https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+    https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+    /etc/apt/sources.list.d/jenkins.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install jenkins
+    sudo systemctl start jenkins
+    sudo systemctl enable jenkins
 Access Jenkins in a web browser using the public IP of your EC2 instance.
 
-publicIp:8080
+    publicIp:8080
 
 Install Necessary Plugins in Jenkins:
 
@@ -142,48 +142,48 @@ Create a Jenkins webhook
 
 Configure CI/CD Pipeline in Jenkins:
 Create a CI/CD pipeline in Jenkins to automate your application deployment.
-pipeline {
-    agent any
-    tools {
-        jdk 'jdk17'
-        nodejs 'node16'
-    }
-    environment {
-        SCANNER_HOME = tool 'sonar-scanner'
-    }
-    stages {
-        stage('clean workspace') {
-            steps {
-                cleanWs()
-            }
+    pipeline {
+        agent any
+        tools {
+            jdk 'jdk17'
+            nodejs 'node16'
         }
-        stage('Checkout from Git') {
-            steps {
-                git branch: 'main', url: 'https://github.com/vikramkujur/Netflix_DevSecOps_project.git'
-            }
+        environment {
+            SCANNER_HOME = tool 'sonar-scanner'
         }
-        stage("Sonarqube Analysis") {
-            steps {
-                withSonarQubeEnv('sonar-server') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
-                    -Dsonar.projectKey=Netflix'''
+        stages {
+            stage('clean workspace') {
+                steps {
+                    cleanWs()
+                }
+            }
+            stage('Checkout from Git') {
+                steps {
+                    git branch: 'main', url: 'https://github.com/vikramkujur/Netflix_DevSecOps_project.git'
+                }
+            }
+            stage("Sonarqube Analysis") {
+                steps {
+                    withSonarQubeEnv('sonar-server') {
+                        sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                        -Dsonar.projectKey=Netflix'''
+                    }
+                }
+            }
+            stage("quality gate") {
+                steps {
+                    script {
+                        waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                    }
+                }
+            }
+            stage('Install Dependencies') {
+                steps {
+                    sh "npm install"
                 }
             }
         }
-        stage("quality gate") {
-            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
-                }
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                sh "npm install"
-            }
-        }
     }
-}
 Certainly, here are the instructions without step numbers:
 
 Install Dependency-Check and Docker Tools in Jenkins
@@ -223,92 +223,92 @@ Choose "Secret text" as the kind of credentials.
 Enter your DockerHub credentials (Username and Password) and give the credentials an ID (e.g., "docker").
 Click "OK" to save your DockerHub credentials.
 Now, you have installed the Dependency-Check plugin, configured the tool, and added Docker-related plugins along with your DockerHub credentials in Jenkins. You can now proceed with configuring your Jenkins pipeline to include these tools and credentials in your CI/CD process.
-
-pipeline{
-    agent any
-    tools{
-        jdk 'jdk17'
-        nodejs 'node16'
-    }
-    environment {
-        SCANNER_HOME=tool 'sonar-scanner'
-    }
-    stages {
-        stage('clean workspace'){
-            steps{
-                cleanWs()
-            }
+    
+    pipeline{
+        agent any
+        tools{
+            jdk 'jdk17'
+            nodejs 'node16'
         }
-        stage('Checkout from Git'){
-            steps{
-                git branch: 'main', url: 'https://github.com/vikramkujur/Netflix_DevSecOps_project.git'
-            }
+        environment {
+            SCANNER_HOME=tool 'sonar-scanner'
         }
-        stage("Sonarqube Analysis "){
-            steps{
-                withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
-                    -Dsonar.projectKey=Netflix '''
+        stages {
+            stage('clean workspace'){
+                steps{
+                    cleanWs()
                 }
             }
-        }
-        stage("quality gate"){
-           steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+            stage('Checkout from Git'){
+                steps{
+                    git branch: 'main', url: 'https://github.com/vikramkujur/Netflix_DevSecOps_project.git'
                 }
-            } 
-        }
-        stage('Install Dependencies') {
-            steps {
-                sh "npm install"
             }
-        }
-        stage('OWASP FS SCAN') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
-        stage('TRIVY FS SCAN') {
-            steps {
-                sh "trivy fs . > trivyfs.txt"
-            }
-        }
-        stage("Docker Build & Push"){
-            steps{
-                script{
-                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build --build-arg TMDB_V3_API_KEY="YOUR_API_KEY" -t netflix ."
-                       sh "docker tag netflix vikram911/netflix:latest "
-                       sh "docker push vikram911/netflix:latest "
+            stage("Sonarqube Analysis "){
+                steps{
+                    withSonarQubeEnv('sonar-server') {
+                        sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                        -Dsonar.projectKey=Netflix '''
                     }
                 }
             }
-        }
-        stage("TRIVY"){
-            steps{
-                sh "trivy image vikram911/netflix:latest > trivyimage.txt" 
+            stage("quality gate"){
+               steps {
+                    script {
+                        waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                    }
+                } 
             }
-        }
-        stage('Deploy to container'){
-            steps{
-                sh 'docker run -d -p 8081:80 vikram911/netflix:latest'
+            stage('Install Dependencies') {
+                steps {
+                    sh "npm install"
+                }
+            }
+            stage('OWASP FS SCAN') {
+                steps {
+                    dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                }
+            }
+            stage('TRIVY FS SCAN') {
+                steps {
+                    sh "trivy fs . > trivyfs.txt"
+                }
+            }
+            stage("Docker Build & Push"){
+                steps{
+                    script{
+                       withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                           sh "docker build --build-arg TMDB_V3_API_KEY="YOUR_API_KEY" -t netflix ."
+                           sh "docker tag netflix vikram911/netflix:latest "
+                           sh "docker push vikram911/netflix:latest "
+                        }
+                    }
+                }
+            }
+            stage("TRIVY"){
+                steps{
+                    sh "trivy image vikram911/netflix:latest > trivyimage.txt" 
+                }
+            }
+            stage('Deploy to container'){
+                steps{
+                    sh 'docker run -d -p 8081:80 vikram911/netflix:latest'
+                }
             }
         }
     }
-}
-post {
-     always {
-        emailext attachLog: true,
-            subject: "'${currentBuild.result}'",
-            body: "Project: ${env.JOB_NAME}<br/>" +
-                "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                "URL: ${env.BUILD_URL}<br/>",
-            to: 'skmishbahuli@gmail.com',
-            attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+    post {
+         always {
+            emailext attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                    "URL: ${env.BUILD_URL}<br/>",
+                to: 'skmishbahuli@gmail.com',
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+            }
         }
-    }
 
 
 
