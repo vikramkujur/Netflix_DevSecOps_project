@@ -688,15 +688,21 @@ After installing ArgoCD, you need to set up your GitHub repository as a source f
 **Create an ArgoCD Application:**
 
     name: Set the name for your application.
+    
     destination: Define the destination where your application should be deployed.
+    
     project: Specify the project the application belongs to.
+    
     source: Set the source of your application, including the GitHub repository URL, revision, and the path to the application within the repository.
+    
     syncPolicy: Configure the sync policy, including automatic syncing, pruning, and self-healing.
-    Access your Application
+    
+**Access your Application**
 
 To Access the app make sure port 30007 is open in your security group and then open a new tab paste your NodeIP:30007, your app should be running.
 
 **Phase 7: Cleanup**
 
 Cleanup AWS EC2 Instances:
+
 Terminate AWS EC2 instances that are no longer needed.
