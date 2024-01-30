@@ -10,19 +10,20 @@
 
 
 # Deploy Netflix Clone on Cloud using Jenkins - DevSecOps Project!
-**Phase 1:** Initial Setup and Deployment
-****Step 1**:** Launch EC2 (Ubuntu 22.04):
+**Phase 1: Initial Setup and Deployment**
+
+**Step 1: Launch EC2 (Ubuntu 22.04):**
 
 Provision an EC2 instance on AWS with Ubuntu 22.04.
 Connect to the instance using SSH.
-Step 2: Clone the Code:
+**Step 2: Clone the Code:**
 
 Update all the packages and then clone the code.
 
 Clone your application's code repository onto the EC2 instance:
 
     git clone https://github.com/N4si/DevSecOps-Project.git
-Step 3: Install Docker and Run the App Using a Container:
+**Step 3: Install Docker and Run the App Using a Container:**
 
 Set up Docker on the EC2 instance:
     
@@ -41,7 +42,7 @@ Build and run your application using Docker containers:
     docker rmi -f netflix
     It will show an error cause you need API key
 
-Step 4: Get the API Key:
+**Step 4: Get the API Key:**
 
 Open a web browser and navigate to TMDB (The Movie Database) website. 
 
@@ -62,7 +63,7 @@ Now recreate the Docker image with your api key:
 
     docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
     
-Phase 2: Security
+**Phase 2: Security**
 
 Install SonarQube and Trivy:
 
@@ -94,7 +95,7 @@ Integrate SonarQube with your CI/CD pipeline.
 
 Configure SonarQube to analyze code for quality and security issues.
 
-Phase 3: CI/CD Setup
+**Phase 3: CI/CD Setup**
 
 Install Jenkins for Automation:
 
@@ -140,7 +141,7 @@ Configure Java and Nodejs in Global Tool Configuration
 
 Goto Manage Jenkins → Tools → Install JDK(17) and NodeJs(16)→ Click on Apply and Save
 
-SonarQube
+**SonarQube**
 
 Create the token
 
@@ -205,9 +206,9 @@ Create a CI/CD pipeline in Jenkins to automate your application deployment.
     }
 Certainly, here are the instructions without step numbers:
 
-Install Dependency-Check and Docker Tools in Jenkins
+**Install Dependency-Check and Docker Tools in Jenkins**
 
-Install Dependency-Check Plugin:
+**Install Dependency-Check Plugin:**
 
 Go to "Dashboard" in your Jenkins web interface.
 
@@ -229,7 +230,7 @@ Add the tool's name, e.g., "DP-Check."
 
 Save your settings.
 
-Install Docker Tools and Docker Plugins:
+**Install Docker Tools and Docker Plugins:**
 
 Go to "Dashboard" in your Jenkins web interface.
 
@@ -246,7 +247,7 @@ Check the following Docker-related plugins:
     docker-build-step
     Click on the "Install without restart" button to install these plugins.
 
-Add DockerHub Credentials:
+**Add DockerHub Credentials:**
 
 To securely handle DockerHub credentials in your Jenkins pipeline, follow these steps:
 
@@ -352,13 +353,13 @@ Now, you have installed the Dependency-Check plugin, configured the tool, and ad
 // sudo su
 // sudo usermod -aG docker jenkins
 // sudo systemctl restart jenkins
-Phase 4: Monitoring
+**Phase 4:** Monitoring
 
-Install Prometheus and Grafana:
+**Install Prometheus and Grafana:**
 
 Set up Prometheus and Grafana to monitor your application.
 
-Installing Prometheus:
+**Installing Prometheus:**
 
 First, create a dedicated Linux user for Prometheus and download Prometheus:
 
@@ -432,7 +433,7 @@ You can access Prometheus in a web browser using your server's IP and port 9090:
 
     http://<your-server-ip>:9090
 
-Installing Node Exporter:
+**Installing Node Exporter:**
 
 Create a system user for Node Exporter and download Node Exporter:
 
@@ -621,13 +622,13 @@ Configure Prometheus Plugin Integration:
 
 Integrate Jenkins with Prometheus to monitor the CI/CD pipeline.
 
-Phase 5: Notification
+**Phase 5: Notification**
 
 Implement Notification Services:
 
 Set up email notifications in Jenkins or other notification mechanisms.
 
-Phase 6: Kubernetes
+**Phase 6: Kubernetes**
 
 Create Kubernetes Cluster with Nodegroups
 
@@ -665,9 +666,9 @@ Don't forget to reload or restart Prometheus to apply these changes to your conf
 
 To deploy an application with ArgoCD, you can follow these steps, which I'll outline in Markdown format:
 
-Deploy Application with ArgoCD
+**Deploy Application with ArgoCD**
 
-Install ArgoCD:
+**Install ArgoCD:**
 
 You can install ArgoCD on your Kubernetes cluster by following the instructions provided in the EKS Workshop documentation.
 
@@ -685,7 +686,7 @@ Create an ArgoCD Application:
     Access your Application
 
 To Access the app make sure port 30007 is open in your security group and then open a new tab paste your NodeIP:30007, your app should be running.
-Phase 7: Cleanup
+**Phase 7: Cleanup**
 
 Cleanup AWS EC2 Instances:
 Terminate AWS EC2 instances that are no longer needed.
