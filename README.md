@@ -16,6 +16,7 @@
 
 Provision an EC2 instance on AWS with Ubuntu 22.04.
 Connect to the instance using SSH.
+
 **Step 2: Clone the Code:**
 
 Update all the packages and then clone the code.
@@ -69,7 +70,7 @@ Install SonarQube and Trivy:
 
 Install SonarQube and Trivy on the EC2 instance to scan for vulnerabilities.
 
-sonarqube
+**sonarqube**
 
     docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
     
@@ -77,7 +78,7 @@ To access:
 
     publicIP:9000 (by default username & password is admin)
 
-To install Trivy:
+**To install Trivy:**
 
     sudo apt-get install wget apt-transport-https gnupg lsb-release
     wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
@@ -85,11 +86,11 @@ To install Trivy:
     sudo apt-get update
     sudo apt-get install trivy 
     
-to scan image using trivy
+To scan image using trivy
 
     trivy image <imageid>
 
-Integrate SonarQube and Configure:
+**Integrate SonarQube and Configure:**
 
 Integrate SonarQube with your CI/CD pipeline.
 
@@ -108,7 +109,7 @@ Install Jenkins on the EC2 instance to automate deployment: Install Java
     OpenJDK Runtime Environment (build 17.0.8+7-Debian-1deb12u1)
     OpenJDK 64-Bit Server VM (build 17.0.8+7-Debian-1deb12u1, mixed mode, sharing)
 
-#jenkins
+**jenkins**
 
     sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
     https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
@@ -124,19 +125,19 @@ Access Jenkins in a web browser using the public IP of your EC2 instance.
 
     publicIp:8080
 
-Install Necessary Plugins in Jenkins:
+**Install Necessary Plugins in Jenkins:**
 
 Goto Manage Jenkins →Plugins → Available Plugins →
 
 Install below plugins
 
-1 Eclipse Temurin Installer (Install without restart)
-
-2 SonarQube Scanner (Install without restart)
-
-3 NodeJs Plugin (Install Without restart)
-
-4 Email Extension Plugin
+    1 Eclipse Temurin Installer (Install without restart)
+    
+    2 SonarQube Scanner (Install without restart)
+    
+    3 NodeJs Plugin (Install Without restart)
+    
+    4 Email Extension Plugin
 
 Configure Java and Nodejs in Global Tool Configuration
 
@@ -352,6 +353,7 @@ Now, you have installed the Dependency-Check plugin, configured the tool, and ad
 
 
 // _If you get docker login failed errorr_
+
 // sudo su
 // sudo usermod -aG docker jenkins
 // sudo systemctl restart jenkins
@@ -491,7 +493,7 @@ Configure Prometheus Plugin Integration:
 
 Integrate Jenkins with Prometheus to monitor the CI/CD pipeline.
 
-Prometheus Configuration:
+**Prometheus Configuration:**
 
 To configure Prometheus to scrape metrics from Node Exporter and Jenkins, you need to modify the prometheus.yml file. Here is an example prometheus.yml configuration for your setup:
         
@@ -680,7 +682,7 @@ Set Your GitHub Repository as a Source:
 
 After installing ArgoCD, you need to set up your GitHub repository as a source for your application deployment. This typically involves configuring the connection to your repository and defining the source for your ArgoCD application. The specific steps will depend on your setup and requirements.
 
-Create an ArgoCD Application:
+**Create an ArgoCD Application:**
 
     name: Set the name for your application.
     destination: Define the destination where your application should be deployed.
