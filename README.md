@@ -43,14 +43,21 @@ Build and run your application using Docker containers:
 
 Step 4: Get the API Key:
 
-        Open a web browser and navigate to TMDB (The Movie Database) website. 
-        Click on "Login" and create an account. 
-        Once logged in, go to your profile and select "Settings." 
-        Click on "API" from the left-side panel. 
-        Create a new API key by clicking "Create" and accepting the terms and conditions. 
-        Provide the required basic details and click "Submit." 
-        You will receive your TMDB API key. 
-        Now recreate the Docker image with your api key: 
+Open a web browser and navigate to TMDB (The Movie Database) website. 
+
+Click on "Login" and create an account. 
+
+Once logged in, go to your profile and select "Settings." 
+
+Click on "API" from the left-side panel. 
+
+Create a new API key by clicking "Create" and accepting the terms and conditions. 
+
+Provide the required basic details and click "Submit." 
+
+You will receive your TMDB API key. 
+
+Now recreate the Docker image with your api key: 
         
 
     docker build --build-arg TMDB_V3_API_KEY=<your-api-key> -t netflix .
