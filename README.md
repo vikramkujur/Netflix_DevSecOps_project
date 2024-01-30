@@ -99,7 +99,7 @@ Configure SonarQube to analyze code for quality and security issues.
 
 Install Jenkins for Automation:
 
-    Install Jenkins on the EC2 instance to automate deployment: Install Java
+Install Jenkins on the EC2 instance to automate deployment: Install Java
     
     sudo apt update
     sudo apt install fontconfig openjdk-17-jre
