@@ -91,7 +91,9 @@ to scan image using trivy
 Integrate SonarQube and Configure:
 
 Integrate SonarQube with your CI/CD pipeline.
+
 Configure SonarQube to analyze code for quality and security issues.
+
 Phase 3: CI/CD Setup
 
 Install Jenkins for Automation:
@@ -135,9 +137,11 @@ Install below plugins
 4 Email Extension Plugin
 
 Configure Java and Nodejs in Global Tool Configuration
+
 Goto Manage Jenkins → Tools → Install JDK(17) and NodeJs(16)→ Click on Apply and Save
 
 SonarQube
+
 Create the token
 
 Goto Jenkins Dashboard → Manage Jenkins → Credentials → Add Secret Text. It should look like this
@@ -155,6 +159,7 @@ We will install a sonar scanner in the tools.
 Create a Jenkins webhook
 
 Configure CI/CD Pipeline in Jenkins:
+
 Create a CI/CD pipeline in Jenkins to automate your application deployment.
     pipeline {
         agent any
@@ -205,37 +210,53 @@ Install Dependency-Check and Docker Tools in Jenkins
 Install Dependency-Check Plugin:
 
 Go to "Dashboard" in your Jenkins web interface.
+
 Navigate to "Manage Jenkins" → "Manage Plugins."
+
 Click on the "Available" tab and search for "OWASP Dependency-Check."
+
 Check the checkbox for "OWASP Dependency-Check" and click on the "Install without restart" button.
+
 Configure Dependency-Check Tool:
 
 After installing the Dependency-Check plugin, you need to configure the tool.
+
 Go to "Dashboard" → "Manage Jenkins" → "Global Tool Configuration."
+
 Find the section for "OWASP Dependency-Check."
+
 Add the tool's name, e.g., "DP-Check."
+
 Save your settings.
+
 Install Docker Tools and Docker Plugins:
 
 Go to "Dashboard" in your Jenkins web interface.
+
 Navigate to "Manage Jenkins" → "Manage Plugins."
+
 Click on the "Available" tab and search for "Docker."
+
 Check the following Docker-related plugins:
-Docker
-Docker Commons
-Docker Pipeline
-Docker API
-docker-build-step
-Click on the "Install without restart" button to install these plugins.
+
+    Docker
+    Docker Commons
+    Docker Pipeline
+    Docker API
+    docker-build-step
+    Click on the "Install without restart" button to install these plugins.
+
 Add DockerHub Credentials:
 
 To securely handle DockerHub credentials in your Jenkins pipeline, follow these steps:
-Go to "Dashboard" → "Manage Jenkins" → "Manage Credentials."
-Click on "System" and then "Global credentials (unrestricted)."
-Click on "Add Credentials" on the left side.
-Choose "Secret text" as the kind of credentials.
-Enter your DockerHub credentials (Username and Password) and give the credentials an ID (e.g., "docker").
-Click "OK" to save your DockerHub credentials.
+
+    Go to "Dashboard" → "Manage Jenkins" → "Manage Credentials."
+    Click on "System" and then "Global credentials (unrestricted)."
+    Click on "Add Credentials" on the left side.
+    Choose "Secret text" as the kind of credentials.
+    Enter your DockerHub credentials (Username and Password) and give the credentials an ID (e.g., "docker").
+    Click "OK" to save your DockerHub credentials.
+    
 Now, you have installed the Dependency-Check plugin, configured the tool, and added Docker-related plugins along with your DockerHub credentials in Jenkins. You can now proceed with configuring your Jenkins pipeline to include these tools and credentials in your CI/CD process.
     
     pipeline{
@@ -488,6 +509,7 @@ Make sure to replace <your-jenkins-ip> and <your-jenkins-port> with the appropri
 Check the validity of the configuration file:
 
 promtool check config /etc/prometheus/prometheus.yml
+
 Reload the Prometheus configuration without restarting:
 
     curl -X POST http://localhost:9090/-/reload
@@ -568,7 +590,9 @@ Choose "Prometheus" as the data source type.
 In the "HTTP" section:
 
 Set the "URL" to http://localhost:9090 (assuming Prometheus is running on the same server).
+
 Click the "Save & Test" button to ensure the data source is working.
+
 Step 10: Import a Dashboard:
 
 To make it easier to view metrics, you can import a pre-configured dashboard. Follow these steps:
@@ -594,19 +618,27 @@ Grafana is a powerful tool for creating visualizations and dashboards, and you c
 That's it! You've successfully installed and set up Grafana to work with Prometheus for monitoring and visualization.
 
 Configure Prometheus Plugin Integration:
+
 Integrate Jenkins with Prometheus to monitor the CI/CD pipeline.
+
 Phase 5: Notification
 
 Implement Notification Services:
+
 Set up email notifications in Jenkins or other notification mechanisms.
+
 Phase 6: Kubernetes
+
 Create Kubernetes Cluster with Nodegroups
+
 In this phase, you'll set up a Kubernetes cluster with node groups. This will provide a scalable environment to deploy and manage your applications.
 
 Monitor Kubernetes with Prometheus
+
 Prometheus is a powerful monitoring and alerting toolkit, and you'll use it to monitor your Kubernetes cluster. Additionally, you'll install the node exporter using Helm to collect metrics from your cluster nodes.
 
 Install Node Exporter using Helm
+
 To begin monitoring your Kubernetes cluster, you'll install the Prometheus Node Exporter. This component allows you to collect system-level metrics from your cluster nodes. Here are the steps to install the Node Exporter using Helm:
 
 Add the Prometheus Community Helm repository:
@@ -634,6 +666,7 @@ Don't forget to reload or restart Prometheus to apply these changes to your conf
 To deploy an application with ArgoCD, you can follow these steps, which I'll outline in Markdown format:
 
 Deploy Application with ArgoCD
+
 Install ArgoCD:
 
 You can install ArgoCD on your Kubernetes cluster by following the instructions provided in the EKS Workshop documentation.
@@ -644,12 +677,12 @@ After installing ArgoCD, you need to set up your GitHub repository as a source f
 
 Create an ArgoCD Application:
 
-name: Set the name for your application.
-destination: Define the destination where your application should be deployed.
-project: Specify the project the application belongs to.
-source: Set the source of your application, including the GitHub repository URL, revision, and the path to the application within the repository.
-syncPolicy: Configure the sync policy, including automatic syncing, pruning, and self-healing.
-Access your Application
+    name: Set the name for your application.
+    destination: Define the destination where your application should be deployed.
+    project: Specify the project the application belongs to.
+    source: Set the source of your application, including the GitHub repository URL, revision, and the path to the application within the repository.
+    syncPolicy: Configure the sync policy, including automatic syncing, pruning, and self-healing.
+    Access your Application
 
 To Access the app make sure port 30007 is open in your security group and then open a new tab paste your NodeIP:30007, your app should be running.
 Phase 7: Cleanup
