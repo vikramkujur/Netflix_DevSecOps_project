@@ -530,32 +530,33 @@ You can access Prometheus targets at:
 
 Install Grafana on Ubuntu 22.04 and Set it up to Work with Prometheus
 
-Step 1: Install Dependencies:
+**Step 1:** Install Dependencies:
 
 First, ensure that all necessary dependencies are installed:
     
     sudo apt-get update
     sudo apt-get install -y apt-transport-https software-properties-common
-    Step 2: Add the GPG Key:
+
+**Step 2:** Add the GPG Key:
 
 Add the GPG key for Grafana:
 
     wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 
-Step 3: Add Grafana Repository:
+**Step 3:** Add Grafana Repository:
 
 Add the repository for Grafana stable releases:
 
     echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
 
-Step 4: Update and Install Grafana:
+**Step 4:** Update and Install Grafana:
 
 Update the package list and install Grafana:
 
     sudo apt-get update
     sudo apt-get -y install grafana
 
-Step 5: Enable and Start Grafana Service:
+**Step 5:** Enable and Start Grafana Service:
 
 To automatically start Grafana after a reboot, enable the service:
 
@@ -565,13 +566,13 @@ Then, start Grafana:
 
     sudo systemctl start grafana-server
 
-Step 6: Check Grafana Status:
+**Step 6:** Check Grafana Status:
 
 Verify the status of the Grafana service to ensure it's running correctly:
 
     sudo systemctl status grafana-server
 
-Step 7: Access Grafana Web Interface:
+**Step 7:** Access Grafana Web Interface:
 
 Open a web browser and navigate to Grafana using your server's IP address. The default port for Grafana is 3000. For example:
 
@@ -579,11 +580,11 @@ Open a web browser and navigate to Grafana using your server's IP address. The d
 
 You'll be prompted to log in to Grafana. The default username is "admin," and the default password is also "admin."
 
-Step 8: Change the Default Password:
+**Step 8:** Change the Default Password:
 
 When you log in for the first time, Grafana will prompt you to change the default password for security reasons. Follow the prompts to set a new password.
 
-Step 9: Add Prometheus Data Source:
+**Step 9:** Add Prometheus Data Source:
 
 To visualize metrics, you need to add a data source. Follow these steps:
 
@@ -601,7 +602,7 @@ Set the "URL" to http://localhost:9090 (assuming Prometheus is running on the sa
 
 Click the "Save & Test" button to ensure the data source is working.
 
-Step 10: Import a Dashboard:
+**Step 10:** Import a Dashboard:
 
 To make it easier to view metrics, you can import a pre-configured dashboard. Follow these steps:
 
