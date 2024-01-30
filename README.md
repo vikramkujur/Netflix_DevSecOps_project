@@ -355,7 +355,9 @@ Now, you have installed the Dependency-Check plugin, configured the tool, and ad
 // _If you get docker login failed errorr_
 
 // sudo su
+
 // sudo usermod -aG docker jenkins
+
 // sudo systemctl restart jenkins
 
 **Phase 4:** Monitoring
