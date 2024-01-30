@@ -163,48 +163,50 @@ Create a Jenkins webhook
 Configure CI/CD Pipeline in Jenkins:
 
 Create a CI/CD pipeline in Jenkins to automate your application deployment.
-    pipeline {
-        agent any
-        tools {
-            jdk 'jdk17'
-            nodejs 'node16'
-        }
-        environment {
-            SCANNER_HOME = tool 'sonar-scanner'
-        }
-        stages {
-            stage('clean workspace') {
-                steps {
-                    cleanWs()
-                }
+
+        pipeline {
+            agent any
+            tools {
+                jdk 'jdk17'
+                nodejs 'node16'
             }
-            stage('Checkout from Git') {
-                steps {
-                    git branch: 'main', url: 'https://github.com/vikramkujur/Netflix_DevSecOps_project.git'
-                }
+            environment {
+                SCANNER_HOME = tool 'sonar-scanner'
             }
-            stage("Sonarqube Analysis") {
-                steps {
-                    withSonarQubeEnv('sonar-server') {
-                        sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
-                        -Dsonar.projectKey=Netflix'''
+            stages {
+                stage('clean workspace') {
+                    steps {
+                        cleanWs()
+                    }
+                }
+                stage('Checkout from Git') {
+                    steps {
+                        git branch: 'main', url: 'https://github.com/vikramkujur/Netflix_DevSecOps_project.git'
+                    }
+                }
+                stage("Sonarqube Analysis") {
+                    steps {
+                        withSonarQubeEnv('sonar-server') {
+                            sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                            -Dsonar.projectKey=Netflix'''
+                        }
+                    }
+                }
+                stage("quality gate") {
+                    steps {
+                        script {
+                            waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                        }
+                    }
+                }
+                stage('Install Dependencies') {
+                    steps {
+                        sh "npm install"
                     }
                 }
             }
-            stage("quality gate") {
-                steps {
-                    script {
-                        waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
-                    }
-                }
-            }
-            stage('Install Dependencies') {
-                steps {
-                    sh "npm install"
-                }
-            }
         }
-    }
+    
 Certainly, here are the instructions without step numbers:
 
 **Install Dependency-Check and Docker Tools in Jenkins**
@@ -349,11 +351,11 @@ Now, you have installed the Dependency-Check plugin, configured the tool, and ad
 
 
 
-// If you get docker login failed errorr
-
+// _If you get docker login failed errorr_
 // sudo su
 // sudo usermod -aG docker jenkins
 // sudo systemctl restart jenkins
+
 **Phase 4:** Monitoring
 
 **Install Prometheus and Grafana:**
@@ -661,6 +663,7 @@ Update your Prometheus configuration (prometheus.yml) to add a new job for scrap
     metrics_path: '/metrics'
     static_configs:
       - targets: ['node1Ip:9100']
+      - 
 Replace 'your-job-name' with a descriptive name for your job. The static_configs section specifies the targets to scrape metrics from, and in this case, it's set to nodeip:9001.
 
 Don't forget to reload or restart Prometheus to apply these changes to your configuration.
@@ -687,6 +690,7 @@ Create an ArgoCD Application:
     Access your Application
 
 To Access the app make sure port 30007 is open in your security group and then open a new tab paste your NodeIP:30007, your app should be running.
+
 **Phase 7: Cleanup**
 
 Cleanup AWS EC2 Instances:
